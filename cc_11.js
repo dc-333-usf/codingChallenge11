@@ -32,5 +32,3 @@ const book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 123456, 5);
 console.log(book1.getDetails());
 book1.updateCopies(-1);
 console.log(book1.getDetails());
-
-//Task 2: Creating a borrower class. Library member scenario.
