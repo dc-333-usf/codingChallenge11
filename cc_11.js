@@ -60,3 +60,29 @@ borrower1.borrowBook("The Great Gatsby");
 console.log(borrower1.borrowedBooks);
 borrower1.returnBook("The Great Gatsby");
 console.log(borrower1.borrowedBooks); //test data
+
+//Task 3: Creating a library class. Book and borrower tracking scenario.
+class Library { //create new library class
+    constructor() { //create the constructor with no parameters
+        this.books = []; //create an empty books array
+        this.borrowers = []; //create an empty borrowers array
+    }
+
+    addBook(book) { //add a method to push to the books array if the book is an instance of the Book class
+        if (book instanceof Book) { //check if the book is an instance of Book
+            this.books.push(book); //if it is, push it to the array
+        } else { //if it's not
+            return console.log(`Invalid book.`) //return error message
+        }
+    }
+
+    listBooks() { //add a method to log all the details of the books in this array
+        this.books.forEach(inst => console.log(inst.getDetails())); //for each instance in the array, use the getDetails method to return the details
+    }
+
+
+}
+
+const library = new Library();
+library.addBook(book1);
+library.listBooks(); //test data
