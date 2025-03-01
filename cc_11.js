@@ -76,13 +76,45 @@ class Library { //create new library class
         }
     }
 
+    addMember(borrower) {//added a method to add members to the library array, like with the books
+        if (borrower instanceof Borrower) { //check if the borrower is an instance of Borrower
+            this.borrowers.push(borrower); //if it is, push it to the array
+        } else { //if they're not
+            return console.log(`Invalid member.`); //return an error message
+        }
+    }
+
     listBooks() { //add a method to log all the details of the books in this array
         this.books.forEach(inst => console.log(inst.getDetails())); //for each instance in the array, use the getDetails method to return the details
     }
 
+    //Task 4: Implementing book borrowing.
+    lendBook(borrowerId, isbn) { //
+        const book = this.books.find(b => b.isbn === isbn); //find the book with the matching ISBN and save it
+        const borrower = this.borrowers.find(b => b.borrowerId === borrowerId); //find the borrower with the matching ID
+        if (!book) { //if the book is not found
+            return console.log(`Book not found.`); //return an error
+        }
+        if (!borrower) { //if the borrower is not found
+            return console.log(`Member not found`); //return an error
+        }
+        if (book.copies <= 0) { //if there are not enough copies to lend the book
+            return console.log(`Insufficient copies.`); //return an error
+        } 
+        book.updateCopies(-1);
+        borrower.borrowBook(book); //if none of the previous if statements execute, subtract one from the number of available copies and use the borrowBook method to put it in the array of books borrowed by the borrower
+        }
+    }
 
-}
 
+//Task 3 test data
 const library = new Library();
 library.addBook(book1);
-library.listBooks(); //test data
+library.listBooks();
+
+
+//Task 4 test data
+library.addMember(borrower1); 
+library.lendBook(201, 123456);
+console.log(book1.getDetails());
+console.log(borrower1.borrowedBooks);
