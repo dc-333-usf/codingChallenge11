@@ -43,35 +43,35 @@ class Borrower { //create the borrower class
     }
 
     borrowBook(book) { //create a method inside the class
-        let foundBook;
-        if (typeof book == "string") {
-            foundBook = Book.allBooks.find(b => b.title === book);
-        } else if (book instanceof Book) {
+        let foundBook; //create a variable with no value, to be assigned later
+        if (typeof book == "string") { //if the value entered is a string
+            foundBook = Book.allBooks.find(b => b.title === book); //set the value of the variable equal to the instance of Book in the allBooks array with the title matching the given title
+        } else if (book instanceof Book) { //if the given value is an instance of the Book class, the variable will be set to the value of the instance
             foundBook = book;
         }
-        if (!foundBook) {
-            return console.log(`Book not found.`);
+        if (!foundBook) { //if the variable is not set
+            return console.log(`Book not found.`); //return an error message
         }
-        if (foundBook.copies <= 0) {
-            return console.log(`Insufficient copies.`);
+        if (foundBook.copies <= 0) { //if the number of copies is 0 or less
+            return console.log(`Insufficient copies.`); //return an error message
         }
-        foundBook.updateCopies(-1);
-        this.borrowedBooks.push(foundBook);
+        foundBook.updateCopies(-1); //if neither of the two previous if conditions execute, remove a copy from the number of copies
+        this.borrowedBooks.push(foundBook); //push the book to the borrowedBooks array
     }
 
     returnBook(book) { //create another method to take books out of the array, meaning they are no longer borrowed
-        let foundBook;
-        if (typeof book === "string") {
-            foundBook = this.borrowedBooks.find(b => b.title === book);
-        } else if (book instanceof Book) {
-            foundBook = book;
+        let foundBook; //initialize a variable with no value
+        if (typeof book === "string") { //if the type of value is a string
+            foundBook = this.borrowedBooks.find(b => b.title === book); //find the instance in the array with a matching title
+        } else if (book instanceof Book) { //if the given input is an instance of Book
+            foundBook = book; //the variable will be set to that instance
         }
-        if (!foundBook) {
-            return console.log(`Book not found.`)
+        if (!foundBook) { //if the variable is not set equal to something
+            return console.log(`Book not found.`) //return an error
         }
-        const index = this.borrowedBooks.findIndex(b => b === foundBook);
-        this.borrowedBooks.splice(index, 1);
-        foundBook.updateCopies(1);
+        const index = this.borrowedBooks.findIndex(b => b === foundBook); //find the index of the specified book
+        this.borrowedBooks.splice(index, 1); //get rid of the instance in this array using splice. start at the index we found and remove one instance
+        foundBook.updateCopies(1); //add one copy
     }
 }
 
@@ -79,7 +79,7 @@ const borrower1 = new Borrower("Alice Johnson", 201);
 borrower1.borrowBook("The Great Gatsby");
 console.log(JSON.stringify(borrower1.borrowedBooks, null, 2));
 borrower1.returnBook("The Great Gatsby");
-console.log(JSON.stringify(borrower1.borrowedBooks, null, 2));
+console.log(JSON.stringify(borrower1.borrowedBooks, null, 2)); //test data. Using JSON.stringify because of issues with the array in the Google Chrome console
 
 //Task 3: Creating a library class. Book and borrower tracking scenario.
 class Library { //create new library class
@@ -125,18 +125,18 @@ class Library { //create new library class
         borrower.borrowBook(book); //if none of the previous if statements execute, subtract one from the number of available copies and use the borrowBook method to put it in the array of books borrowed by the borrower
         }
 
-        // returnBook(borrowerId, isbn) {
-        //     const book = this.borrowedBooks.find(b => b.isbn === isbn);
-        //     const borrower = this.borrowers.find(b => b.borrowerId === borrowerId);
-        //     if (!book) { //if the book is not found
-        //         return console.log(`Book not found.`); //return an error
-        //     }
-        //     if (!borrower) { //if the borrower is not found
-        //         return console.log(`Member not found`); //return an error
-        //     }
-        //     book.updateCopies(1);
-        //     borrower.returnBook(book);
-        // }
+    //Task 5: implementing book returns.
+    returnBook(borrowerId, isbn) {
+        const borrower = this.borrowers.find(b => b.borrowerId === borrowerId);
+        if (!borrower) { //if the borrower is not found
+            return console.log(`Member not found`); //return an error
+        }
+        const book = borrower.borrowedBooks.find(b => b.isbn === isbn);
+        if (!book) { //if the book is not found
+        return console.log(`Book not found.`); //return an error
+        }
+        borrower.returnBook(book); //use
+        }
     }
 
 
@@ -150,10 +150,10 @@ library.listBooks();
 library.addMember(borrower1); 
 library.lendBook(201, 123456);
 console.log(book1.getDetails());
-console.log(borrower1.borrowedBooks);
+console.log(JSON.stringify(borrower1.borrowedBooks));
 
 //Task 5 test data
-// library.returnBook(201, 123456);
-// console.log(book1.getDetails());
-// console.log(borrower1.borrowedBooks);
+library.returnBook(201, 123456);
+console.log(JSON.stringify(book1.getDetails()));
+console.log(JSON.stringify(borrower1.borrowedBooks));
 
