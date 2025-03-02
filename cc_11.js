@@ -1,11 +1,13 @@
 //Task 1: Creating a book class. Library inventory management system.
 
 class Book { //create the new class
+    static allBooks = [];
     constructor(title, author, isbn, copies) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.copies = copies; //store the variables
+        Book.allBooks.push(this); //add each book to the all books array
     }
 
     getDetails() { //create a function to get the details of something in the book class
@@ -27,7 +29,6 @@ class Book { //create the new class
         }
     }
 }
-
 const book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 123456, 5);
 console.log(book1.getDetails());
 book1.updateCopies(-1);
@@ -42,24 +43,43 @@ class Borrower { //create the borrower class
     }
 
     borrowBook(book) { //create a method inside the class
-            this.borrowedBooks.push(book); //push the specified book to the array
+        let foundBook;
+        if (typeof book == "string") {
+            foundBook = Book.allBooks.find(b => b.title === book);
+        } else if (book instanceof Book) {
+            foundBook = book;
+        }
+        if (!foundBook) {
+            return console.log(`Book not found.`);
+        }
+        if (foundBook.copies <= 0) {
+            return console.log(`Insufficient copies.`);
+        }
+        foundBook.updateCopies(-1);
+        this.borrowedBooks.push(foundBook);
     }
 
     returnBook(book) { //create another method to take books out of the array, meaning they are no longer borrowed
-        const index = this.borrowedBooks.indexOf(book); //find the index in the array that contains the specified book
-        if (index !== -1) { //if the index is not equal to negative one, in other words, if the instance is found
-            this.borrowedBooks.splice(index, 1); //splice the array at the index of the book we want to remove, remove one item 
-        } else { //if the index of the book is -1, meaning it was not found
-            return console.log(`Book not found.`) //return an error message
+        let foundBook;
+        if (typeof book === "string") {
+            foundBook = this.borrowedBooks.find(b => b.title === book);
+        } else if (book instanceof Book) {
+            foundBook = book;
         }
+        if (!foundBook) {
+            return console.log(`Book not found.`)
+        }
+        const index = this.borrowedBooks.findIndex(b => b === foundBook);
+        this.borrowedBooks.splice(index, 1);
+        foundBook.updateCopies(1);
     }
 }
 
 const borrower1 = new Borrower("Alice Johnson", 201);
 borrower1.borrowBook("The Great Gatsby");
-console.log(borrower1.borrowedBooks);
+console.log(JSON.stringify(borrower1.borrowedBooks, null, 2));
 borrower1.returnBook("The Great Gatsby");
-console.log(borrower1.borrowedBooks); //test data
+console.log(JSON.stringify(borrower1.borrowedBooks, null, 2));
 
 //Task 3: Creating a library class. Book and borrower tracking scenario.
 class Library { //create new library class
@@ -104,6 +124,19 @@ class Library { //create new library class
         book.updateCopies(-1);
         borrower.borrowBook(book); //if none of the previous if statements execute, subtract one from the number of available copies and use the borrowBook method to put it in the array of books borrowed by the borrower
         }
+
+        // returnBook(borrowerId, isbn) {
+        //     const book = this.borrowedBooks.find(b => b.isbn === isbn);
+        //     const borrower = this.borrowers.find(b => b.borrowerId === borrowerId);
+        //     if (!book) { //if the book is not found
+        //         return console.log(`Book not found.`); //return an error
+        //     }
+        //     if (!borrower) { //if the borrower is not found
+        //         return console.log(`Member not found`); //return an error
+        //     }
+        //     book.updateCopies(1);
+        //     borrower.returnBook(book);
+        // }
     }
 
 
@@ -118,3 +151,9 @@ library.addMember(borrower1);
 library.lendBook(201, 123456);
 console.log(book1.getDetails());
 console.log(borrower1.borrowedBooks);
+
+//Task 5 test data
+// library.returnBook(201, 123456);
+// console.log(book1.getDetails());
+// console.log(borrower1.borrowedBooks);
+
